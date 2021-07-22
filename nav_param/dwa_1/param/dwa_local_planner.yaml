@@ -1,0 +1,79 @@
+DWAPlannerROS:
+
+# Robot Configuration Parameters
+  acc_lim_x: 3.0
+  acc_lim_y: 3.0 
+  acc_lim_theta: 2.8
+  acc_lim_trans: 1.0
+  
+  
+  max_vel_trans: 2.04125396712 # choose slightly less than the base's capability
+  min_vel_trans: 0.126329378446  # this is the min trans velocity when there is negligible rotational velocity
+  
+  max_vel_x: 2.12510817316
+  min_vel_x: -2.12510817316 
+
+  max_vel_y: 2.12510817316   # omni drive robot
+  min_vel_y: -2.12510817316  # omni drive robot
+
+# Warning!
+#   do not set min_trans_vel to 0.0 otherwise dwa will always think translational velocities
+#   are non-negligible and small in place rotational velocities will be created.
+
+  max_vel_theta: &max_vel_theta 4.47374282921  # choose slightly less than the base's capability
+  min_vel_theta: &min_vel_theta 0.827271945972  # this is the min angular velocity when there is negligible translational velocity
+  max_rot_vel: *max_vel_theta
+  min_rot_vel: *min_vel_theta
+
+  trans_stopped_vel: 0.0
+  trans_stopped_vel: &trans_stopped_vel 0.0
+  rot_stopped_vel: *trans_stopped_vel
+
+
+# Goal Tolerance Parameters
+  yaw_goal_tolerance: 0.05
+  xy_goal_tolerance: 0.2
+  latch_xy_goal_tolerance: false
+
+# Forward Simulation Parameters
+  sim_time: 2.41421356237
+  sim_granularity: 0.24007875908
+  angular_sim_granularity: 0.324919696233
+  vx_samples: 1       
+  vy_samples: 5       # diff drive robot, there is only one sample
+  vth_samples: 10
+
+
+# cost = 
+#  path_distance_bias * (distance to path from the endpoint of the trajectory in meters) 
+#  + goal_distance_bias * (distance to local goal from the endpoint of the trajectory in meters) 
+#  + occdist_scale * (maximum obstacle cost along the trajectory in obstacle cost (0-254))
+
+# Trajectory Scoring Parameters
+  path_distance_bias: 500.0     # prefers trajectories on global path
+  goal_distance_bias: 1000.0      # prefers trajectories that go towards (local) goal, based on wave propagation
+  occdist_scale: 60.0           # weighting for how much the controller should avoid obstacles
+  twirling_scale: 10.0           # optionally prefer trajectories that don't spin
+  forward_point_distance: 1.0 # how far along to place an additional scoring point
+  stop_time_buffer: 0.0157092553237         # amount of time a robot must stop in before colliding for a valid traj.
+  scaling_speed: 1.0           # absolute velocity at which to start scaling the robot's footprint
+  max_scaling_factor: 10.0       # how much to scale the robot's footprint when at speed.
+  prune_plan: false
+
+# Oscillation Prevention Parameters
+  oscillation_reset_dist: 0.0157092553237  # how far to travel before resetting oscillation flags
+  oscillation_reset_angle: 0.0157092553237  # how far to travel before resetting oscillation flags
+
+# Debugging
+  publish_traj_pc : true
+  publish_cost_grid_pc: true
+  global_frame_id: map
+
+
+# Differential-drive robot configuration - necessary?
+  holonomic_robot: true
+  
+  cheat_factor: 1.0
+
+# move_base
+controller_frequency: 30.0
