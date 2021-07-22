@@ -9,8 +9,8 @@ EBandPlannerROS:
   max_translational_acceleration: 1.0
   max_rotational_acceleration: 1.0
 global_costmap:
-#  footprint: &footprint [[-0.2475, -0.365], [-0.2475, 0.365], [0.2475, 0.365], [0.2475, -0.365]]
-  footprint: &footprint [[-0.1, -0.2], [-0.1, 0.2], [0.1,0.2], [0.25,0], [0.1, -0.2]]
+  footprint: &footprint [[-0.2475, -0.365], [-0.2475, 0.365], [0.2475, 0.365], [0.2475, -0.365]]
+#  footprint: &footprint [[-0.1, -0.2], [-0.1, 0.2], [0.1,0.2], [0.25,0], [0.1, -0.2]]
   footprint_padding: &padding 0.0
 local_costmap:
   footprint: *footprint
