@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="mpo_500">
+
+  <!-- Macro for calculating inertia of cylinder -->
+  <xacro:macro name="cylinder_inertia" params="m r h">
+    <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
+              iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
+              izz="${m*r*r/2}" /> 
+  </xacro:macro>
+  
+  <xacro:macro name="collision_sphere" params="radius xyz:='0 0 0' rpy:='0 0 0'">
+		<collision>
+			<origin xyz="${xyz}" rpy="${rpy}"/>
+			<geometry>
+				<sphere radius="${radius}"/>
+			</geometry>
+		</collision>
+	</xacro:macro>
+	
+  <xacro:macro name="inertial_sphere" params="radius rho:=1000 xyz:='0 0 0' rpy:='0 0 0'">
+		<xacro:property name="mass" value="${4/3*rho*pi*radius**3}"/>
+		<inertial>
+			<origin xyz="${xyz}" rpy="${rpy}"/>
+			<mass value="${mass}"/>
+			<inertia ixx="${(2/5*mass)*(radius**2)}" iyy="${(2/5*mass)*(radius**2)}" izz="${(2/5*mass)*(radius**2)}" ixy="0" ixz="0" iyz="0"/>
+		</inertial>
+	</xacro:macro>
+	
+  <xacro:macro name="roller" params="wheel_name num m_angle">	
+		<!-- Radius of the sphere used for the roller -->
+		<xacro:property name="N" value="0.125"/>	
+		<!-- Radius of the sphere used for the roller -->
+		<xacro:property name="radius" value="0.05"/>
+		<!-- Distance from center of wheel to the visual rotation axis -->
+		<xacro:property name="visual_axis_offset" value="-0.07825"/>
+		<!-- Distance from center of wheel to the bottom of the roller -->
+		<xacro:property name="roller_bottom_offset" value="-0.07325"/>
+		<!-- Distance from center of wheel to the real rotation axis-->
+		<xacro:property name="axis_offset" value="${roller_bottom_offset + radius}"/>
+		<xacro:property name="angle" value="${2*num*N*pi}"/>
+		<link name="roller_${wheel_name}_${num}">
+			<!-- <visual>
+				<geometry>
+					<box size="0.0001 0.0001 0.0001"/>
+				</geometry>
+			</visual>			 -->
+			<!-- <xacro:collision_cylinder rpy="0 ${pi/2} 0" length="0.232" radius="0.094"/> -->
+			<xacro:collision_sphere xyz="0 0 0" radius="${radius}"/>
+			<!-- <xacro:inertial_cylinder rpy="0 ${pi/2} 0" length="0.0232" radius="0.0094"/> -->
+			<xacro:inertial_sphere rpy="0 0 0" radius="${radius}"/>
+		</link>
+		<joint name="roller_${wheel_name}_${num}_joint" type="continuous">
+			<origin xyz="${cos(angle)*axis_offset} ${-sin(angle)*axis_offset} 0" rpy="${m_angle} 0.0 ${-2.0*num*pi*N}"/>
+			<axis xyz="0 0 0" />
+			<parent link="${wheel_name}_link"/>
+			<child link="roller_${wheel_name}_${num}"/>
+		</joint>
+	</xacro:macro>
+	
+  
+  <xacro:macro name="mecanum_wheel_a" params="name parent *origin">
+   <joint name="${name}_joint" type="continuous">
+    <axis xyz="0 0 1" />
+    <xacro:insert_block name="origin" />
+    <joint_properties damping="0.0" friction="0.0" />
+    <parent link="${parent}" />
+    <child link="${name}_link" />
+   </joint>
+
+   <link name="${name}_link" type="wheel">
+    <inertial>
+      <mass value="2.1" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <cylinder_inertia m="2.1" r="0.07825" h="0.085"/>
+    </inertial>
+
+    <visual>
+     <origin xyz="0 0 0" rpy="0 0 0" />
+     <geometry>
+        <cylinder radius="0.07825" length="0.085"/>
+     </geometry>
+     <material name="Black" />
+    </visual>
+
+    <collision>
+     <origin xyz="0 0 0" rpy="0 0 0" />
+     <geometry>
+        <cylinder radius="0.07825" length="0.085"/>
+     </geometry>
+    </collision>
+   </link>
+   
+   <xacro:property name="angle" value="${pi/4.0}"/>
+   <xacro:roller wheel_name="${name}" num="0" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="1" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="2" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="3" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="4" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="5" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="6" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="7" m_angle="${angle}"/>
+
+  </xacro:macro>
+  
+  <xacro:macro name="mecanum_wheel_b" params="name parent *origin">
+   <joint name="${name}_joint" type="continuous">
+    <axis xyz="0 0 1" />
+    <xacro:insert_block name="origin" />
+    <joint_properties damping="0.0" friction="0.0" />
+    <parent link="${parent}" />
+    <child link="${name}_link" />
+   </joint>
+
+   <link name="${name}_link" type="wheel">
+    <inertial>
+      <mass value="2.1" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <cylinder_inertia m="2.1" r="0.07825" h="0.085"/>
+    </inertial>
+
+    <visual>
+     <origin xyz="0 0 0" rpy="0 0 0" />
+     <geometry>
+        <cylinder radius="0.07825" length="0.085"/>
+     </geometry>
+     <material name="Black" />
+    </visual>
+
+    <collision>
+     <origin xyz="0 0 0" rpy="0 0 0" />
+     <geometry>
+        <cylinder radius="0.07825" length="0.085"/>
+     </geometry>
+    </collision>
+   </link>
+   
+   <xacro:property name="angle" value="${-pi/4.0}"/>
+   <xacro:roller wheel_name="${name}" num="0" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="1" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="2" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="3" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="4" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="5" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="6" m_angle="${angle}"/>
+   <xacro:roller wheel_name="${name}" num="7" m_angle="${angle}"/>
+  </xacro:macro>
+</robot>
+
+
