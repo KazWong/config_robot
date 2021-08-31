@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<robot name="camera" xmlns:xacro="http://ros.org/wiki/xacro">
+	<!-- camera -->
+	<xacro:property name="cam_size" value="0.05" />
+	
+	<xacro:macro name="camera_gazebo" params="name">
+		<gazebo reference="ideal_${name}">
+			<sensor type="camera" name="${name}">
+				<update_rate>30</update_rate>
+				<camera name="${name}">
+					<horizontal_fov>1.3962634</horizontal_fov>
+					<image>
+						<width>1024</width>
+						<height>1024</height>
+						<format>R8G8B8</format>
+					</image>
+					<clip>
+						<near>0.1</near>
+						<far>300</far>
+					</clip>
+					<noise>
+						<type>gaussian</type>
+						<mean>0.0</mean>
+						<stddev>0.007</stddev>
+					</noise>
+				</camera>
+				<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+					<imageTopicName>image_raw</imageTopicName>
+					<frameName>ideal_${name}</frameName>
+					<alwaysOn>true</alwaysOn>
+					<updateRate>1.0</updateRate>
+					<cameraName>${name}</cameraName>
+					<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+					<hackBaseline>0.07</hackBaseline>
+					<distortionK1>0.0</distortionK1>
+					<distortionK2>0.0</distortionK2>
+					<distortionK3>0.0</distortionK3>
+					<distortionT1>0.0</distortionT1>
+					<distortionT2>0.0</distortionT2>
+				</plugin>
+			</sensor>
+    
+			<!--<material>Gazebo/Red</material>
+			<gravity>true</gravity>
+			<dampingFactor>0.0</dampingFactor>
+			<maxVel>100.0</maxVel>
+			<minDepth>0.01</minDepth>
+			<mu1>200.0</mu1>
+			<mu2>100.0</mu2>
+			<fdir1>1 0 0</fdir1>
+			<kp>100000.0</kp>
+			<kd>1.0</kd>
+			<selfCollide>false</selfCollide>
+			<maxContacts></maxContacts>
+			<laserRetro></laserRetro>-->
+		</gazebo>
+	</xacro:macro>
+  
+	<xacro:macro name="block_camera" params="name parent xyz:='0 0 0' rpy:='0 0 0'">
+		<joint name="ideal_${name}_joint" type="fixed">
+			<origin xyz="${xyz}" rpy="${rpy}" />
+			<parent link="${parent}" />
+			<child link="${name}" />
+		</joint>
+
+		<link name="${name}">
+			<xacro:inertia_cuboid mass="0.1" d="${cam_size}" w="${cam_size}" h="${cam_size}" />
+			<xacro:collision_cuboid length="${cam_size}" width="${cam_size}" height="${cam_size}" />
+			<xacro:visual_cuboid length="${cam_size}" width="${cam_size}" height="${cam_size}"  material="Red" />
+		</link>
+	</xacro:macro>
+</robot>

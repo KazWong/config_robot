@@ -70,7 +70,7 @@
   </gazebo>
 
   <!-- Wheel Macro -->
-  <xacro:include filename="$(find ghost)/urdf/omni_wheel.urdf.xacro" />
+  <xacro:include filename="$(find config_robot)/urdf/omni_wheel.urdf.xacro" />
 
   <!-- WHEELS -->
   <xacro:omni_wheel_250 name="wheel_front_left" parent="agv_base_link">

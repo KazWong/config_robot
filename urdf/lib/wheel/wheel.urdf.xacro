@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot name="wheel" xmlns:xacro="http://ros.org/wiki/xacro">
+	<xacro:macro name="wheel" params="name parent *origin">
+		<xacro:property name="radius" value="0.07825"/>	
+		<xacro:property name="length" value="0.085"/>	
+		<xacro:property name="mass" value="2.1"/>	
+		
+		<joint name="${name}_joint" type="continuous">
+			<axis xyz="0 0 1" />
+			<xacro:insert_block name="origin" />
+			<parent link="${parent}" />
+			<child link="${name}" />
+			<dynamics damping="1000000.0" friction="0.0" />
+		</joint>
+
+		<link name="${name}" type="wheel">
+			<xacro:inertia_cylinder mass="${mass}" radius="${radius}" length="${length}" />
+			<xacro:collision_cylinder radius="${radius}" length="${length}" />
+			<xacro:visual_cylinder radius="${radius}" length="${length}" />
+		</link>
+	</xacro:macro>
+</robot>
+
+
