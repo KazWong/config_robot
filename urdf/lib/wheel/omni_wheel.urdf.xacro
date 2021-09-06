@@ -40,7 +40,7 @@
 			<dynamics damping="1000000.0" friction="0.0" />
 		</joint>
 
-		<link name="${name}" type="wheel">
+		<link name="${name}">
 			<xacro:inertia_cylinder mass="${mass}" radius="${radius}" length="${length}" />
 			<xacro:collision_cylinder radius="${radius}" length="${length}" />
 			<xacro:visual_cylinder radius="${radius}" length="${length}" />
