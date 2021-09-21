@@ -30,13 +30,13 @@
   
   <!-- Macro for calculating inertia of sphere -->
 	<xacro:macro name="inertia_sphere" params="radius rho:=1000 xyz:='0 0 0' rpy:='0 0 0'">
-		<xacro:property name="m" value="${4/3*rho*pi*radius**3}"/>
+		<xacro:property name="mass" value="${4/3*rho*pi*radius**3}"/>
 		<inertial>
 			<origin xyz="${xyz}" rpy="${rpy}"/>
-			<mass value="${m}"/>
-			<inertia	ixx="${(2/5*m)*(radius**2)}" ixy="0" ixz="0"
-								iyy="${(2/5*m)*(radius**2)}"  iyz="0"
-								izz="${(2/5*m)*(radius**2)}" />
+			<mass value="${mass}"/>
+			<inertia	ixx="${(2/5*mass)*(radius**2)}" ixy="0" ixz="0"
+								iyy="${(2/5*mass)*(radius**2)}"  iyz="0"
+								izz="${(2/5*mass)*(radius**2)}" />
 		</inertial>
 	</xacro:macro>
 	
@@ -44,6 +44,7 @@
 	<xacro:macro name="inertia_cuboid" params="mass w d h xyz:='0 0 0' rpy:='0 0 0'">
 	<inertial>
 		<origin xyz="${xyz}" rpy="${rpy}"/>
+		<mass value="${mass}"/>
 		<inertia	ixx="${mass*(h*h+d*d)/12}" ixy = "0" ixz = "0"
 							iyy="${mass*(w*w+d*d)/12}" iyz = "0"
 							izz="${mass*(w*w+h*h)/12}" />

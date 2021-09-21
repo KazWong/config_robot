@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="wheel" xmlns:xacro="http://ros.org/wiki/xacro">
-	<xacro:macro name="wheel" params="name parent xyz:='0 0 0' rpy:='0 0 0'">
+	<xacro:macro name="wheel" params="name parent xyz:='0 0 0' rpy:='0 0 0' damping:=1000000.0">
 		<xacro:property name="radius" value="0.07825"/>	
 		<xacro:property name="length" value="0.085"/>	
 		<xacro:property name="rho" value="1046.3516"/>	
@@ -11,7 +11,7 @@
 			<origin xyz="${xyz}" rpy="${rpy}" />
 			<parent link="${parent}" />
 			<child link="${name}" />
-			<dynamics damping="1000000.0" friction="0.0" />
+			<dynamics damping="${damping}" friction="0.0" />
 		</joint>
 
 		<link name="${name}">

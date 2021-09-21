@@ -9,7 +9,7 @@
   </xacro:macro>
   
   <xacro:macro name="omni_wheel_250" params="name parent *origin">
-   <joint name="${name}_joint" type="fixed">
+   <joint name="${name}_joint" type="continuous">
     <xacro:insert_block name="origin" />
     <axis xyz="0 1 0" />
     <joint_properties damping="0.0" friction="0.0" />
@@ -29,7 +29,7 @@
      <geometry>
         <cylinder radius="0.07825" length="0.085"/>
      </geometry>
-     <material name="Neobotix/Black" />
+     <material name="Black" />
     </visual>
 
     <collision>
@@ -43,7 +43,7 @@
     <gazebo reference="${name}_link">
         <gravity>true</gravity>
         <self_collide>false</self_collide>
-        <material value="Gazebo/Black"/>
+        <material value="Black"/>
     </gazebo>
 
   </xacro:macro>

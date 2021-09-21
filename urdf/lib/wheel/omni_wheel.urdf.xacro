@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="wheel" xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="roller" params="wheel_name num radius visual_axis_offset roller_bottom_offset side">	
+  <xacro:macro name="roller" params="wheel_name num radius visual_axis_offset roller_bottom_offset side damping:=1000000.0">	
 		<!-- Radius of the sphere used for the roller -->
 		<!-- <xacro:property name="radius" value="${radius}"/> -->
 		<!-- Distance from center of wheel to the visual rotation axis -->
@@ -16,7 +16,7 @@
 			<axis xyz="0 0 0" />
 			<parent link="${wheel_name}"/>
 			<child link="roller_${wheel_name}_${side}_${num}"/>
-			<dynamics damping="1000000.0" friction="0.0" />
+			<dynamics damping="${damping}" friction="0.0" />
 		</joint>
 		
 		<link name="roller_${wheel_name}_${side}_${num}">
@@ -26,7 +26,7 @@
 		</link>
 	</xacro:macro>
 	
-	<xacro:macro name="omni_wheel" params="name parent xyz:='0 0 0' rpy:='0 0 0'">
+	<xacro:macro name="omni_wheel" params="name parent xyz:='0 0 0' rpy:='0 0 0' damping:=1000000.0">
 		<xacro:property name="radius" value="0.07825"/>	
 		<xacro:property name="length" value="0.085"/>	
 		<xacro:property name="roller_radius" value="0.05"/>	
@@ -37,7 +37,7 @@
 			<origin xyz="${xyz}" rpy="${rpy}" />
 			<parent link="${parent}" />
 			<child link="${name}" />
-			<dynamics damping="1000000.0" friction="0.0" />
+			<dynamics damping="${damping}" friction="0.0" />
 		</joint>
 
 		<link name="${name}">
