@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<robot name="wheelbarrow" xmlns:xacro="http://ros.org/wiki/xacro">
+	<!-- Robot Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/mecanum_base_dual_cam.urdf.xacro" />
+	
+	<gazebo reference="base_footprint">
+    <material>Gazebo/DarkGrey</material>
+	</gazebo>
+	
+	<gazebo reference="base_footprint">
+		<turnGravityOff>false</turnGravityOff>
+	</gazebo>
+
+	<!-- AGV lidar gazebo simulation -->
+	<xacro:lidar_gazebo name="lidar_link" />
+
+	<!-- AGV imu gazebo simulation -->
+	<xacro:imu_gazebo name="imu_link" />
+	
+	<!-- left camera gazebo simulation -->
+	<xacro:camera_gazebo name="left_camera" />
+	
+	<!-- right camera gazebo simulation -->
+	<xacro:camera_gazebo name="right_camera" />
+
+	<gazebo>
+    <plugin name="planar_move_controller" filename="libgazebo_ros_planar_move.so">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryTopic>odom</odometryTopic>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <odometryRate>12.0</odometryRate>
+    </plugin>
+  </gazebo>
+</robot>

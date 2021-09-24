@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+	<xacro:macro name="caster_wheel" params="name parent xyz:='0 0 0' rpy:='0 0 0'">
+		<xacro:property name="radius" value="0.07825"/>
+		<xacro:property name="rho" value="1046.3516"/>
+
+		<joint name="${name}_joint" type="continuous">
+			<axis xyz="0 0 1" />
+			<origin xyz="${xyz}" rpy="${rpy}" />
+			<parent link="${parent}" />
+			<child link="${name}_planner" />
+			<dynamics damping="0.01" friction="0.0" />
+		</joint>
+
+		<link name="${name}_planner">
+			<xacro:inertia_cylinder mass="0.2" radius="0.03" length="0.01" />
+			<xacro:collision_cylinder radius="0.03" length="0.03" />
+			<xacro:visual_cylinder radius="0.03" length="0.03" />
+		</link>
+		<joint name="${name}_planner_joint" type="continuous">
+			<axis xyz="1 0 0" />
+			<origin xyz="0 0.05 0.03" rpy="0 0 0" />
+			<parent link="${name}_planner" />
+			<child link="${name}" />
+			<dynamics damping="0.01" friction="0.0" />
+		</joint>
+
+		<link name="${name}">
+			<xacro:inertia_sphere rho="${rho}" radius="${radius-0.03}" />
+			<xacro:collision_sphere radius="${radius-0.03}" />
+			<xacro:visual_sphere radius="${radius-0.03}" />
+		</link>
+
+	</xacro:macro>
+</robot>

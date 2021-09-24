@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<robot name="camera" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 	<!-- camera -->
 	<xacro:property name="cam_size" value="0.05" />
 	
 	<xacro:macro name="camera_gazebo" params="name">
-		<gazebo reference="ideal_${name}">
+		<gazebo reference="${name}">
 			<sensor type="camera" name="${name}">
 				<update_rate>30</update_rate>
 				<camera name="${name}">
@@ -26,7 +26,7 @@
 				</camera>
 				<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
 					<imageTopicName>image_raw</imageTopicName>
-					<frameName>ideal_${name}</frameName>
+					<frameName>${name}</frameName>
 					<alwaysOn>true</alwaysOn>
 					<updateRate>1.0</updateRate>
 					<cameraName>${name}</cameraName>
@@ -57,7 +57,7 @@
 	</xacro:macro>
   
 	<xacro:macro name="block_camera" params="name parent xyz:='0 0 0' rpy:='0 0 0'">
-		<joint name="ideal_${name}_joint" type="fixed">
+		<joint name="${name}_joint" type="fixed">
 			<origin xyz="${xyz}" rpy="${rpy}" />
 			<parent link="${parent}" />
 			<child link="${name}" />

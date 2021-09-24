@@ -1,10 +1,14 @@
 <?xml version="1.0"?>
-<robot name="robot" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="wheelbarrow" xmlns:xacro="http://ros.org/wiki/xacro">
 	<!-- General Macro -->
 	<xacro:include filename="$(find config_robot)/urdf/lib/common.urdf.xacro" />
 	<!-- Wheel Macro -->
 	<xacro:include filename="$(find config_robot)/urdf/lib/wheel/wheel.urdf.xacro" />
-	<xacro:include filename="$(find config_robot)/urdf/lib/wheel/swivel_caster.urdf.xacro" />
+	<xacro:include filename="$(find config_robot)/urdf/lib/wheel/caster_wheel.urdf.xacro" />
+	<!-- IMU Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/sensor/block_imu.urdf.xacro" />
+	<!-- Lidar Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/sensor/block_lidar.urdf.xacro" />
 
 	<!-- PROPERTY LIST -->
 	<!--All units in m-kg-s-radians unit system -->
@@ -21,11 +25,7 @@
 
 	<!-- BASE-FOOTPRINT -->
 	<!-- base_footprint is a fictitious link(frame) that is on the ground right below base_link origin -->
-	<link name="base_footprint">
-		<xacro:inertia_cuboid  mass="${agv_base_mass}" d="${0.001}" w="${0.001}" h="${0.001}" xyz="0 0 0" />
-		<xacro:collision_cuboid length="${0.001}" width="${0.001}" height="${0.001}" />
-		<xacro:visual_cuboid length="${0.001}" width="${0.001}" height="${0.001}" material="White" />
-	</link>
+	<link name="base_footprint"/>
 
 	<!-- AGV_BASE_LINK -->
 	<joint name="agv_base_joint" type="fixed">
@@ -33,79 +33,81 @@
 		<parent link="base_footprint"/>
 		<child link="agv_base_link" />
 	</joint>
-	
+
 	<link name="agv_base_link">
 		<!-- body -->
-		<xacro:inertia_cuboid mass="${agv_base_mass}" d="${agv_base_length}" w="${agv_base_width}" 
-													h="${agv_base_height}" xyz="0 0 ${-agv_base_height/2-agv_base_lift}" />
+		<xacro:inertia_cuboid mass="${agv_base_mass}" d="${agv_base_length}" w="${agv_base_width}" h="${agv_base_height}" />
 		<xacro:collision_cuboid length="${agv_base_length}" width="${agv_base_width}" height="${agv_base_height}" />
 		<xacro:visual_cuboid length="${agv_base_length}" width="${agv_base_width}" height="${agv_base_height}" material="White" />
-		
+
 		<!-- handle -->
 		<xacro:property name="x" value="0.34"/>
 		<xacro:property name="y" value="0.22"/>
-		<xacro:property name="radius" value="0.01"/>	
+		<xacro:property name="radius" value="0.01"/>
 		<xacro:property name="base_length" value="0.4"/>
 		<xacro:property name="upper_length" value="0.2"/>
 		<xacro:property name="handle_length" value="${2*y}"/>
 		<xacro:property name="upper_angle" value="${pi/7}"/>
-		
+
 		<!-- handle left_base -->
-		<xacro:property name="left_base_xyz" value="-${x} ${y} ${base_length/2}"/>	
-		<xacro:property name="left_base_rpy" value="0.0 0.0 0.0"/>	
+		<xacro:property name="left_base_xyz" value="-${x} ${y} ${base_length/2}"/>
+		<xacro:property name="left_base_rpy" value="0.0 0.0 0.0"/>
 		<xacro:inertia_cylinder	mass="0.02" radius="${radius}" length="${base_length}" xyz="${left_base_xyz}" rpy="${left_base_rpy}"/>
 		<xacro:collision_cylinder radius="${radius}" length="${base_length}" xyz="${left_base_xyz}" rpy="${left_base_rpy}"/>
 		<xacro:visual_cylinder radius="${radius}" length="${base_length}" xyz="${left_base_xyz}" rpy="${left_base_rpy}" />
-		
+
 		<!-- handle right_base -->
-		<xacro:property name="right_base_xyz" value="-${x} -${y} ${base_length/2}"/>	
-		<xacro:property name="right_base_rpy" value="0.0 0.0 0.0"/>	
+		<xacro:property name="right_base_xyz" value="-${x} -${y} ${base_length/2}"/>
+		<xacro:property name="right_base_rpy" value="0.0 0.0 0.0"/>
 		<xacro:inertia_cylinder	mass="0.02" radius="${radius}" length="${base_length}" xyz="${right_base_xyz}" rpy="${right_base_rpy}"/>
 		<xacro:collision_cylinder radius="${radius}" length="${base_length}" xyz="${right_base_xyz}" rpy="${right_base_rpy}"/>
 		<xacro:visual_cylinder radius="${radius}" length="${base_length}" xyz="${right_base_xyz}" rpy="${right_base_rpy}" />
-		
+
 		<!-- handle left_upper -->
-		<xacro:property name="left_upper_xyz"	value="-${x + upper_length*0.48*sin(upper_angle)} ${y} 
-																					${base_length + upper_length*0.45*cos(upper_angle)}"/>	
-		<xacro:property name="left_upper_rpy" value="0.0 -${upper_angle} 0.0"/>	
+		<xacro:property name="left_upper_xyz"	value="-${x + upper_length*0.48*sin(upper_angle)} ${y}
+																					${base_length + upper_length*0.45*cos(upper_angle)}"/>
+		<xacro:property name="left_upper_rpy" value="0.0 -${upper_angle} 0.0"/>
 		<xacro:inertia_cylinder	mass="0.02" radius="${radius}" length="${upper_length}" xyz="${left_upper_xyz}" rpy="${left_upper_rpy}"/>
 		<xacro:collision_cylinder radius="${radius}" length="${upper_length}" xyz="${left_upper_xyz}" rpy="${left_upper_rpy}"/>
 		<xacro:visual_cylinder radius="${radius}" length="${upper_length}" xyz="${left_upper_xyz}" rpy="${left_upper_rpy}" />
-		
+
 		<!-- handle right_upper -->
-		<xacro:property name="right_upper_xyz"	value="-${x + upper_length*0.48*sin(upper_angle)} -${y} 
-																						${base_length + upper_length*0.45*cos(upper_angle)}"/>	
-		<xacro:property name="right_upper_rpy" value="0.0 -${upper_angle} 0.0"/>	
+		<xacro:property name="right_upper_xyz"	value="-${x + upper_length*0.48*sin(upper_angle)} -${y}
+																						${base_length + upper_length*0.45*cos(upper_angle)}"/>
+		<xacro:property name="right_upper_rpy" value="0.0 -${upper_angle} 0.0"/>
 		<xacro:inertia_cylinder	mass="0.02" radius="${radius}" length="${upper_length}" xyz="${right_upper_xyz}" rpy="${right_upper_rpy}"/>
 		<xacro:collision_cylinder radius="${radius}" length="${upper_length}" xyz="${right_upper_xyz}" rpy="${right_upper_rpy}"/>
 		<xacro:visual_cylinder radius="${radius}" length="${upper_length}" xyz="${right_upper_xyz}" rpy="${right_upper_rpy}" />
-		
+
 		<!-- handle handle -->
-		<xacro:property name="handle_xyz"	value="-${x + upper_length*sin(upper_angle)} 0.0 
-																			${base_length + upper_length*cos(upper_angle) - radius}"/>	
-		<xacro:property name="handle_rpy" value="${pi/2} 0.0 0.0"/>	
+		<xacro:property name="handle_xyz"	value="-${x + upper_length*sin(upper_angle)} 0.0
+																			${base_length + upper_length*cos(upper_angle) - radius}"/>
+		<xacro:property name="handle_rpy" value="${pi/2} 0.0 0.0"/>
 		<xacro:inertia_cylinder	mass="0.02" radius="${radius}" length="${handle_length}" xyz="${handle_xyz}" rpy="${handle_rpy}"/>
 		<xacro:collision_cylinder radius="${radius}" length="${handle_length}" xyz="${handle_xyz}" rpy="${handle_rpy}"/>
 		<xacro:visual_cylinder radius="${radius}" length="${handle_length}" xyz="${handle_xyz}" rpy="${handle_rpy}" />
 	</link>
-	
+
+	<!-- IMU -->
+	<xacro:block_imu name="imu_link" parent="agv_base_link" xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+
 	<!-- WHEEL_CENTER_LINK -->
 	<joint name="wheel_center_joint" type="fixed">
 		<origin xyz="-0.22 0 0" rpy="0 0 0" />
 		<parent link="base_footprint"/>
 		<child link="wheel_center_link" />
 	</joint>
-	
+
 	<link name="wheel_center_link"/>
-	
+
 	<!-- WHEELS -->
 	<xacro:wheel	name="wheel_left" parent="agv_base_link"
 													xyz="-0.22 0.15 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="${M_PI_2} 0 0" />
 	<xacro:wheel	name="wheel_right" parent="agv_base_link"
 													xyz="-0.22 -0.15 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="${-M_PI_2} 0 0" />
-	<xacro:swivel_caster	name="swivel_caster_left" parent="agv_base_link"
-													xyz="0.22 0.15 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="${M_PI_2} 0 0" />
-	<xacro:swivel_caster	name="swivel_caster_right" parent="agv_base_link"
-													xyz="0.22 -0.15 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="${-M_PI_2} 0 0" />
+	<xacro:caster_wheel	name="caster_left" parent="agv_base_link"
+													xyz="0.22 0.15 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="0 ${pi} 0" />
+	<xacro:caster_wheel	name="caster_right" parent="agv_base_link"
+													xyz="0.22 -0.15 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="0 ${pi} 0" />
 
 </robot>

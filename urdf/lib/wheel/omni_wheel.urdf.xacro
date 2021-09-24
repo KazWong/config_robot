@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<robot name="wheel" xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="roller" params="wheel_name num radius visual_axis_offset roller_bottom_offset side damping:=1000000.0">	
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="roller" params="wheel_name num radius visual_axis_offset roller_bottom_offset side">
 		<!-- Radius of the sphere used for the roller -->
 		<!-- <xacro:property name="radius" value="${radius}"/> -->
 		<!-- Distance from center of wheel to the visual rotation axis -->
@@ -10,34 +10,34 @@
 		<!-- Distance from center of wheel to the real rotation axis-->
 		<xacro:property name="axis_offset" value="${roller_bottom_offset + radius}"/>
 		<xacro:property name="angle" value="${(2*num+side)*0.2*pi}"/>
-		
+
 		<joint name="roller_${wheel_name}_${side}_${num}_joint" type="continuous">
 			<origin xyz="${cos(angle)*axis_offset} ${-sin(angle)*axis_offset} ${(2*side-1)*-0.009521}" rpy="-${angle} 0.0 0.0"/>
 			<axis xyz="0 0 0" />
 			<parent link="${wheel_name}"/>
 			<child link="roller_${wheel_name}_${side}_${num}"/>
-			<dynamics damping="${damping}" friction="0.0" />
+			<dynamics damping="1.0" friction="0.0" />
 		</joint>
-		
+
 		<link name="roller_${wheel_name}_${side}_${num}">
 			<!-- <xacro:inertial_sphere rpy="0 0 0" radius="${radius}"/> -->
 			<xacro:collision_sphere xyz="0 0 0" radius="${radius}"/>
 			<xacro:inertial_sphere rpy="0 0 0" radius="${radius}"/>
 		</link>
 	</xacro:macro>
-	
-	<xacro:macro name="omni_wheel" params="name parent xyz:='0 0 0' rpy:='0 0 0' damping:=1000000.0">
-		<xacro:property name="radius" value="0.07825"/>	
-		<xacro:property name="length" value="0.085"/>	
-		<xacro:property name="roller_radius" value="0.05"/>	
-		<xacro:property name="mass" value="2.1"/>	
-		
+
+	<xacro:macro name="omni_wheel" params="name parent xyz:='0 0 0' rpy:='0 0 0'">
+		<xacro:property name="radius" value="0.07825"/>
+		<xacro:property name="length" value="0.085"/>
+		<xacro:property name="roller_radius" value="0.05"/>
+		<xacro:property name="mass" value="2.1"/>
+
 		<joint name="${name}_joint" type="continuous">
 			<axis xyz="0 0 1" />
 			<origin xyz="${xyz}" rpy="${rpy}" />
 			<parent link="${parent}" />
 			<child link="${name}" />
-			<dynamics damping="${damping}" friction="0.0" />
+			<dynamics damping="1.0" friction="0.0" />
 		</joint>
 
 		<link name="${name}">
@@ -46,27 +46,25 @@
 			<xacro:visual_cylinder radius="${radius}" length="${length}" />
 		</link>
 
-		<xacro:roller	wheel_name="${name}" num="0" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="0" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="0"/>
-		<xacro:roller	wheel_name="${name}" num="1" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="1" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="0"/>
-		<xacro:roller	wheel_name="${name}" num="2" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="2" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="0"/>
-		<xacro:roller	wheel_name="${name}" num="3" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="3" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="0"/>
-		<xacro:roller	wheel_name="${name}" num="4" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="4" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="0"/>
-		<xacro:roller	wheel_name="${name}" num="0" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="0" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="1"/>
-		<xacro:roller	wheel_name="${name}" num="1" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="1" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="1"/>
-		<xacro:roller	wheel_name="${name}" num="2" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="2" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="1"/>
-		<xacro:roller	wheel_name="${name}" num="3" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="3" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="1"/>
-		<xacro:roller	wheel_name="${name}" num="4" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="4" radius="${roller_radius}"
 									visual_axis_offset="${-radius}" roller_bottom_offset="${-(radius - roller_radius)}" side="1"/>
 	</xacro:macro>
 </robot>
-
-

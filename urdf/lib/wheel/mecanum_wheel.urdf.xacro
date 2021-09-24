@@ -1,38 +1,38 @@
 <?xml version="1.0"?>
-<robot name="wheel" xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="roller" params="wheel_name num roller_angle N radius roller_bottom_offset damping:=1000000.0">	
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="roller" params="wheel_name num roller_angle N radius roller_bottom_offset">
 		<xacro:property name="axis_offset" value="${roller_bottom_offset + radius}"/>
 		<xacro:property name="angle" value="${2*num*N*pi}"/>
-		
+
 		<joint name="roller_${wheel_name}_${num}_joint" type="continuous">
 			<origin xyz="${cos(angle)*axis_offset} ${-sin(angle)*axis_offset} 0" rpy="${roller_angle} 0.0 ${-2.0*num*pi*N}"/>
 			<axis xyz="0 0 0" />
 			<parent link="${wheel_name}"/>
 			<child link="roller_${wheel_name}_${num}"/>
-			<dynamics damping="${damping}" friction="0.0" />
+			<dynamics damping="0.01" friction="0.0" />
 		</joint>
-		
+
 		<link name="roller_${wheel_name}_${num}">
 			<xacro:visual_sphere rpy="0 0 0" radius="${radius}"/>
 			<xacro:collision_sphere xyz="0 0 0" radius="${radius}"/>
 			<xacro:inertia_sphere rpy="0 0 0" radius="${radius}"/>
 		</link>
 	</xacro:macro>
-	
-	<xacro:macro name="mecanum_wheel" params="wheel_name parent roller_angle xyz:='0 0 0' rpy:='0 0 0' damping:=1000000.0">
-		<xacro:property name="wheel_radius" value="0.07825"/>	
-		<xacro:property name="core_radius" value="${wheel_radius * 0.76}"/>	
-		<xacro:property name="length" value="0.085"/>	
-		<xacro:property name="roller_radius" value="0.05"/>	
-		<xacro:property name="mass" value="2.1"/>	
+
+	<xacro:macro name="mecanum_wheel" params="wheel_name parent roller_angle xyz:='0 0 0' rpy:='0 0 0'">
+		<xacro:property name="wheel_radius" value="0.07825"/>
+		<xacro:property name="core_radius" value="${wheel_radius * 0.76}"/>
+		<xacro:property name="length" value="0.085"/>
+		<xacro:property name="roller_radius" value="0.05"/>
+		<xacro:property name="mass" value="2.1"/>
 		<xacro:property name="num_of_roller" value="${1.0/8.0}"/>
-		
+
 		<joint name="${wheel_name}_joint" type="continuous">
 			<axis xyz="0 0 1" />
 			<origin xyz="${xyz}" rpy="${rpy}" />
 			<parent link="${parent}" />
 			<child link="${wheel_name}" />
-			<dynamics damping="${damping}" friction="0.0" />
+			<dynamics damping="0.01" friction="0.0" />
 		</joint>
 
 		<link name="${wheel_name}">
@@ -41,32 +41,30 @@
 			<xacro:visual_cylinder radius="${core_radius}" length="${length}" />
 		</link>
 
-		<xacro:roller	wheel_name="${name}" num="0" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="0" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}"
 									roller_bottom_offset="${-(wheel_radius - roller_radius)}" />
-		<xacro:roller	wheel_name="${name}" num="1" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="1" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}"
 									roller_bottom_offset="${-(wheel_radius - roller_radius)}" />
-		<xacro:roller	wheel_name="${name}" num="2" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="2" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}"
 									roller_bottom_offset="${-(wheel_radius - roller_radius)}" />
-		<xacro:roller	wheel_name="${name}" num="3" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="3" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}"
 									roller_bottom_offset="${-(wheel_radius - roller_radius)}" />
-		<xacro:roller	wheel_name="${name}" num="4" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="4" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}"
 									roller_bottom_offset="${-(wheel_radius - roller_radius)}" />
-		<xacro:roller	wheel_name="${name}" num="5" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="5" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}"
 									roller_bottom_offset="${-(wheel_radius - roller_radius)}" />
-		<xacro:roller	wheel_name="${name}" num="6" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="6" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}"
 									roller_bottom_offset="${-(wheel_radius - roller_radius)}" />
-		<xacro:roller	wheel_name="${name}" num="7" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}" 
+		<xacro:roller	wheel_name="${name}" num="7" roller_angle="${roller_angle}" N="${num_of_roller}" radius="${roller_radius}"
 									roller_bottom_offset="${-(wheel_radius - roller_radius)}" />
 	</xacro:macro>
-  
-  
+
+
   <xacro:macro name="mecanum_wheel_a" params="name parent xyz:='0 0 0' rpy:='0 0 0'">
 		<xacro:mecanum_wheel wheel_name="${name}" parent="${parent}" xyz="${xyz}" rpy="${rpy}" roller_angle="${-pi/4.0}" />
   </xacro:macro>
-  
+
 	<xacro:macro name="mecanum_wheel_b" params="name parent xyz:='0 0 0' rpy:='0 0 0'">
 		<xacro:mecanum_wheel wheel_name="${name}" parent="${parent}" xyz="${xyz}" rpy="${rpy}" roller_angle="${pi/4.0}" />
   </xacro:macro>
 </robot>
-
-
