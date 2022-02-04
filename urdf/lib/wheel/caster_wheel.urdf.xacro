@@ -9,7 +9,7 @@
 			<origin xyz="${xyz}" rpy="${rpy}" />
 			<parent link="${parent}" />
 			<child link="${name}_planner" />
-			<dynamics damping="0.01" friction="0.0" />
+			<dynamics damping="0.01" friction="0.2" />
 		</joint>
 
 		<link name="${name}_planner">

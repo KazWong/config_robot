@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<robot name="wheelbarrow" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="diff_base" xmlns:xacro="http://ros.org/wiki/xacro">
 	<!-- Robot Macro -->
 	<xacro:include filename="$(find config_robot)/urdf/diff_base.urdf.xacro" />
 
@@ -8,7 +8,7 @@
 	</gazebo>
 
 	<!-- IMU gazebo simulation -->
-	<xacro:imu_gazebo name="imu_link" />
+	<xacro:imu_gazebo name="center_imu" />
 
 	<!-- IMU gazebo simulation -->
 	<xacro:lidar_gazebo name="lidar_link" />
@@ -25,13 +25,13 @@
       <publishTf>true</publishTf>
       <publishWheelJointState>true</publishWheelJointState>
       <legacyMode>false</legacyMode>
-      <updateRate>30</updateRate>
+      <updateRate>50</updateRate>
       <leftJoint>wheel_left_joint</leftJoint>
       <rightJoint>wheel_right_joint</rightJoint>
       <wheelSeparation>0.3</wheelSeparation>
       <wheelDiameter>0.1565</wheelDiameter>
-      <wheelAcceleration>1</wheelAcceleration>
-      <wheelTorque>10</wheelTorque>
+      <wheelAcceleration>20</wheelAcceleration>
+      <wheelTorque>50</wheelTorque>
       <rosDebugLevel>na</rosDebugLevel>
   	</plugin>
 	</gazebo>
@@ -42,7 +42,7 @@
     <kp>1000000.0</kp>
     <kd>1.0</kd>
     <minDepth>0.001</minDepth>
-    <maxVel>0.1</maxVel>
+    <maxVel>10.0</maxVel>
     <fdir1>1 0 0</fdir1>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
@@ -53,7 +53,7 @@
     <kp>1000000.0</kp>
     <kd>1.0</kd>
     <minDepth>0.001</minDepth>
-    <maxVel>0.1</maxVel>
+    <maxVel>10.0</maxVel>
     <fdir1>1 0 0</fdir1>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
@@ -64,7 +64,7 @@
     <kp>1000000.0</kp>
     <kd>1.0</kd>
     <minDepth>0.001</minDepth>
-    <maxVel>1.0</maxVel>
+    <maxVel>10.0</maxVel>
 		<fdir1>1 0 0</fdir1>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
@@ -75,7 +75,7 @@
     <kp>1000000.0</kp>
     <kd>1.0</kd>
     <minDepth>.001</minDepth>
-    <maxVel>1.0</maxVel>
+    <maxVel>10.0</maxVel>
 		<fdir1>1 0 0</fdir1>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
@@ -86,7 +86,7 @@
     <kp>1000000.0</kp>
     <kd>1.0</kd>
     <minDepth>0.001</minDepth>
-    <maxVel>1.0</maxVel>
+    <maxVel>10.0</maxVel>
 		<fdir1>1 0 0</fdir1>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
@@ -97,7 +97,7 @@
     <kp>1000000.0</kp>
     <kd>1.0</kd>
     <minDepth>.001</minDepth>
-    <maxVel>1.0</maxVel>
+    <maxVel>10.0</maxVel>
 		<fdir1>1 0 0</fdir1>
     <material>Gazebo/FlatBlack</material>
   </gazebo>

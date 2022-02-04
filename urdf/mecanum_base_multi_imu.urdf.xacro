@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<robot name="robot" xmlns:xacro="http://ros.org/wiki/xacro">
+	<!-- General Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/common.urdf.xacro" />
+	<!-- Wheel Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/wheel/mecanum_wheel.urdf.xacro" />
+	<!-- Lidar Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/sensor/block_lidar.urdf.xacro" />
+	<!-- IMU Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/sensor/block_imu.urdf.xacro" />
+
+	<!-- PROPERTY LIST -->
+	<!--All units in m-kg-s-radians unit system -->
+	<xacro:property name="M_PI_2" value="${pi/2.0}" />
+
+	<!-- AGV Base -->
+	<xacro:property name="agv_base_height" value="0.3" />
+	<xacro:property name="agv_base_lift" value="0.025" />
+	<xacro:property name="agv_base_width" value="0.495" />
+	<xacro:property name="agv_base_length" value="0.73" />
+	<xacro:property name="agv_base_mass" value="40" />
+	<xacro:property name="agv_wheel_height" value="0.07825" />
+
+	<!-- AGV Wheel -->
+	<xacro:property name="wheel_x" value="0.22" />
+	<xacro:property name="wheel_y" value="0.21" />
+	<xacro:property name="wheel_z" value="${-agv_base_height/2-agv_base_lift + agv_wheel_height}" />
+
+	<!-- lidar -->
+	<xacro:property name="lidar_x" value="0.0" />
+	<xacro:property name="lidar_y" value="0.0" />
+	<xacro:property name="lidar_z" value="0.4" />
+	<xacro:property name="lidar_yaw" value="${pi}" />
+
+
+
+	<!-- BASE-FOOTPRINT -->
+	<!-- base_footprint is a fictitious link(frame) that is on the ground right below base_link origin -->
+	<link name="base_footprint"/>
+
+	<!-- AGV_BASE_LINK -->
+	<joint name="base_footprint_agv_base_joint" type="fixed">
+		<origin xyz="0 0 ${agv_base_height/2+agv_base_lift}" rpy="0 0 0" />
+		<parent link="base_footprint"/>
+		<child link="agv_base_link" />
+	</joint>
+
+	<link name="agv_base_link">
+		<xacro:inertia_cuboid mass="${agv_base_mass}" d="${agv_base_length}" w="${agv_base_width}" h="${agv_base_height}" />
+		<xacro:collision_cuboid length="${agv_base_length}" width="${agv_base_width}" height="${agv_base_height}" />
+		<xacro:visual_cuboid length="${agv_base_length}" width="${agv_base_width}" height="${agv_base_height}" material="White" />
+	</link>
+
+	<!-- WHEELS -->
+	<xacro:mecanum_wheel_a	name="wheel_front_left" parent="agv_base_link"
+													xyz="${wheel_x} ${wheel_y} ${wheel_z}" rpy="${M_PI_2} 0 0" />
+	<xacro:mecanum_wheel_b	name="wheel_front_right" parent="agv_base_link"
+													xyz="${wheel_x} ${-wheel_y} ${wheel_z}" rpy="${-M_PI_2} 0 0" />
+	<xacro:mecanum_wheel_b	name="wheel_back_left" parent="agv_base_link"
+													xyz="${-wheel_x} ${wheel_y} ${wheel_z}" rpy="${M_PI_2} 0 0" />
+	<xacro:mecanum_wheel_a	name="wheel_back_right" parent="agv_base_link"
+													xyz="${-wheel_x} ${-wheel_y} ${wheel_z}" rpy="${-M_PI_2} 0 0" />
+
+	<!-- lidar -->
+	<xacro:block_lidar name="lidar_link" parent="base_footprint" xyz="${lidar_x} ${lidar_y} ${lidar_z}" rpy="0.0 0.0 ${lidar_yaw}" />
+
+	<!-- imu link -->
+	<joint name="agv_base_imu_link1_joint" type="fixed">
+		<origin xyz="0 0 0.5" rpy="0 0 0" />
+		<parent link="base_footprint"/>
+		<child link="imu_link1" />
+	</joint>
+
+	<link name="imu_link1"/>
+
+	<joint name="agv_base_imu_link2_joint" type="fixed">
+		<origin xyz="0 0 0.6" rpy="0 0 0" />
+		<parent link="base_footprint"/>
+		<child link="imu_link2" />
+	</joint>
+
+	<link name="imu_link2"/>
+	<!-- imu -->
+	<xacro:block_imu name="center_imu" parent="base_footprint" xyz="0.0 0.0 0.5" rpy="0.0 0.0 0.0" />
+	
+	<xacro:block_imu name="imu_link1_0" parent="imu_link1" xyz="0.2 0.0 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link1_1" parent="imu_link1" xyz="-0.3 0.0 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link1_2" parent="imu_link1" xyz="0.0 0.4 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link1_3" parent="imu_link1" xyz="0.0 -0.5 0.0" rpy="0.0 0.0 0.0" />
+
+	<xacro:block_imu name="imu_link2_0" parent="imu_link2" xyz="-0.2 -0.2 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link2_1" parent="imu_link2" xyz="-0.3 0.3 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link2_2" parent="imu_link2" xyz="0.4 -0.4 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link2_3" parent="imu_link2" xyz="0.5 0.5 0.0" rpy="0.0 0.0 0.0" />
+
+</robot>

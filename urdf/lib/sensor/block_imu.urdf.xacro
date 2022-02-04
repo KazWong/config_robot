@@ -3,28 +3,41 @@
 	<!-- lidar -->
 	<xacro:property name="imu_size" value="0.001" />
 
-	<xacro:macro name="imu_gazebo" params="name">
+	<xacro:macro name="imu_gazebo" params="name hz:=100.0">
 		<gazebo reference="${name}">
 			<gravity>true</gravity>
 			<sensor type="imu" name="${name}">
 				<always_on>true</always_on>
-				<update_rate>500</update_rate>
+				<update_rate>${hz}</update_rate>
 				<visualize>true</visualize>
 				<topic>__default_topic__</topic>
 				<plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
-					<topicName>imu</topicName>
-					<bodyName>imu_link</bodyName>
-					<updateRateHZ>100.0</updateRateHZ>
+					<topicName>${name}</topicName>
+					<bodyName>${name}</bodyName>
+					<updateRateHZ>${hz}</updateRateHZ>
 					<gaussianNoise>0.0</gaussianNoise>
 					<xyzOffset>0 0 0</xyzOffset>
 					<rpyOffset>0 0 0</rpyOffset>
-					<frameName>imu_link</frameName>
+					<frameName>${name}</frameName>
 					<initialOrientationAsReference>false</initialOrientationAsReference>
 				</plugin>
 				<pose>0 0 0 0 0 0</pose>
 			</sensor>
 		</gazebo>
 	</xacro:macro>
+	
+	<!-- <xacro:macro name="imu_gazebo" params="name">
+		<gazebo>
+		  <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+		    <alwaysOn>true</alwaysOn>
+		    <bodyName>"${name}"</bodyName>
+		    <topicName>"${name}"</topicName>
+		    <serviceName>imu_service</serviceName>
+		    <gaussianNoise>0.0</gaussianNoise>
+		    <updateRate>20.0</updateRate>
+		  </plugin>
+		</gazebo>
+  </xacro:macro> -->
 
 	<xacro:macro name="block_imu" params="name parent xyz:='0 0 0' rpy:='0 0 0'">
 		<joint name="${name}_joint" type="fixed">

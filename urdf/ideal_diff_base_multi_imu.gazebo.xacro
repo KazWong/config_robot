@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<robot name="ideal_diff_base" xmlns:xacro="http://ros.org/wiki/xacro">
+	<!-- Robot Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/ideal_diff_base_multi_imu.urdf.xacro" />
+
+	<gazebo reference="base_footprint">
+    <material>Gazebo/DarkGrey</material>
+	</gazebo>
+
+	<!-- AGV imu gazebo simulation -->
+	<xacro:imu_gazebo name="center_imu" hz="100.0" />
+	<xacro:imu_gazebo name="imu_link1_0" />
+	<xacro:imu_gazebo name="imu_link1_1" />
+	<xacro:imu_gazebo name="imu_link1_2" />
+	<xacro:imu_gazebo name="imu_link1_3" />
+	
+	<xacro:imu_gazebo name="imu_link2_0" />
+	<xacro:imu_gazebo name="imu_link2_1" />
+	<xacro:imu_gazebo name="imu_link2_2" />
+	<xacro:imu_gazebo name="imu_link2_3" />
+
+	<!-- Lidar gazebo simulation -->
+	<xacro:lidar_gazebo name="lidar_link" />
+
+	<gazebo>
+  	<plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometrySource>world</odometrySource>
+      <publishOdomTF>true</publishOdomTF>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <publishWheelTF>false</publishWheelTF>
+      <publishTf>true</publishTf>
+      <publishWheelJointState>true</publishWheelJointState>
+      <legacyMode>false</legacyMode>
+      <updateRate>50</updateRate>
+      <leftJoint>wheel_left_joint</leftJoint>
+      <rightJoint>wheel_right_joint</rightJoint>
+      <wheelSeparation>0.3</wheelSeparation>
+      <wheelDiameter>0.1565</wheelDiameter>
+      <wheelAcceleration>10.0</wheelAcceleration>
+      <wheelTorque>20</wheelTorque>
+      <rosDebugLevel>na</rosDebugLevel>
+  	</plugin>
+	</gazebo>
+
+  <gazebo reference="wheel_left">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="wheel_right">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="fake_caster_front">
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="fake_caster_back">
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+</robot>

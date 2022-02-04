@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<robot name="ideal_diff_base" xmlns:xacro="http://ros.org/wiki/xacro">
+	<!-- General Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/common.urdf.xacro" />
+	<!-- Wheel Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/wheel/wheel.urdf.xacro" />
+	<xacro:include filename="$(find config_robot)/urdf/lib/wheel/caster_wheel.urdf.xacro" />
+	<!-- IMU Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/sensor/block_imu.urdf.xacro" />
+	<!-- Lidar Macro -->
+	<xacro:include filename="$(find config_robot)/urdf/lib/sensor/block_lidar.urdf.xacro" />
+
+	<!-- PROPERTY LIST -->
+	<!--All units in m-kg-s-radians unit system -->
+	<xacro:property name="M_PI_2" value="${pi/2.0}" />
+
+	<!-- AGV Base -->
+	<xacro:property name="agv_base_height" value="0.4" />
+	<xacro:property name="agv_base_lift" value="0.0" />
+	<xacro:property name="agv_base_radius" value="0.25" />
+	<xacro:property name="agv_base_length" value="0.1" />
+	<xacro:property name="agv_base_mass" value="40.0" />
+	<xacro:property name="agv_wheel_height" value="0.07825" />
+
+
+	<!-- BASE-FOOTPRINT -->
+	<!-- base_footprint is a fictitious link(frame) that is on the ground right below base_link origin -->
+	<link name="base_footprint"/>
+
+	<!-- AGV_BASE_LINK -->
+	<joint name="agv_base_joint" type="fixed">
+		<origin xyz="0 0 ${agv_base_height/2+agv_base_lift}" rpy="0 0 0" />
+		<parent link="base_footprint"/>
+		<child link="agv_base_link" />
+	</joint>
+
+	<link name="agv_base_link">
+		<!-- body -->
+		<xacro:inertia_cylinder mass="${agv_base_mass}" radius="${agv_base_radius}" length="${agv_base_length}" />
+		<xacro:collision_cylinder radius="${agv_base_radius}" length="${agv_base_length}" />
+		<xacro:visual_cylinder radius="${agv_base_radius}" length="${agv_base_length}" material="White" />
+	</link>
+
+	<!-- imu link -->
+	<joint name="agv_base_imu_link1_joint" type="fixed">
+		<origin xyz="0 0 0.5" rpy="0 0 0" />
+		<parent link="base_footprint"/>
+		<child link="imu_link1" />
+	</joint>
+
+	<link name="imu_link1"/>
+
+	<joint name="agv_base_imu_link2_joint" type="fixed">
+		<origin xyz="0 0 0.6" rpy="0 0 0" />
+		<parent link="base_footprint"/>
+		<child link="imu_link2" />
+	</joint>
+
+	<link name="imu_link2"/>
+	<!-- imu -->
+	<xacro:block_imu name="center_imu" parent="base_footprint" xyz="0.0 0.0 0.5" rpy="0.0 0.0 0.0" />
+	
+	<xacro:block_imu name="imu_link1_0" parent="imu_link1" xyz="0.2 0.0 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link1_1" parent="imu_link1" xyz="-0.3 0.0 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link1_2" parent="imu_link1" xyz="0.0 0.4 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link1_3" parent="imu_link1" xyz="0.0 -0.5 0.0" rpy="0.0 0.0 0.0" />
+
+	<xacro:block_imu name="imu_link2_0" parent="imu_link2" xyz="-0.2 -0.2 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link2_1" parent="imu_link2" xyz="-0.3 0.3 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link2_2" parent="imu_link2" xyz="0.4 -0.4 0.0" rpy="0.0 0.0 0.0" />
+	<xacro:block_imu name="imu_link2_3" parent="imu_link2" xyz="0.5 0.5 0.0" rpy="0.0 0.0 0.0" />
+	
+	<!-- Lidar -->
+	<xacro:block_imu name="lidar_link" parent="agv_base_link" xyz="0.0 0.0 0.025" rpy="0.0 0.0 0.0" />
+
+	<!-- WHEELS -->
+	<xacro:wheel	name="wheel_left" parent="agv_base_link"
+													xyz="0.0 0.15 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="${-M_PI_2} 0 0" />
+	<xacro:wheel	name="wheel_right" parent="agv_base_link"
+													xyz="0.0 -0.15 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="${-M_PI_2} 0 0" />
+	
+	<!-- WHEELS Support -->
+	<joint name="fake_caster_front_joint" type="fixed">
+		<origin xyz="0.18 0 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="0 0 0" />
+		<parent link="agv_base_link"/>
+		<child link="fake_caster_front" />
+	</joint>
+	
+	<link name="fake_caster_front">
+		<xacro:visual_sphere radius="0.07825"/>
+		<xacro:collision_sphere radius="0.07825"/>
+		<xacro:inertia_sphere radius="0.07825"/>
+	</link>
+	
+	<joint name="fake_caster_back_joint" type="fixed">
+		<origin xyz="-0.18 0 ${-agv_base_height/2-agv_base_lift + agv_wheel_height}" rpy="0 0 0" />
+		<parent link="agv_base_link"/>
+		<child link="fake_caster_back" />
+	</joint>
+	
+	<link name="fake_caster_back">
+		<xacro:visual_sphere radius="0.07825"/>
+		<xacro:collision_sphere radius="0.07825"/>
+		<xacro:inertia_sphere radius="0.07825"/>
+	</link>
+
+</robot>
